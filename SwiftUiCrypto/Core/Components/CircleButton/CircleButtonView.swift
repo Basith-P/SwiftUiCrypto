@@ -31,6 +31,6 @@ struct CircleButtonView: View {
     Group {
         CircleButtonView(iconName: "heart.fill")
         CircleButtonView(iconName: "heart.fill")
-            .colorScheme(.dark)
+            .preferredColorScheme(.dark)
     }
 }

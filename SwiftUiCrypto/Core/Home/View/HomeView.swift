@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     
+    @EnvironmentObject private var vm: HomeViewModel
     @State private var showPortfolio: Bool = false
     
     var body: some View {
@@ -19,6 +20,15 @@ struct HomeView: View {
             VStack {
                 homeHeader
                 
+                coloumnTitles
+                
+                if (showPortfolio) {
+                    portfolioList
+                        .transition(.move(edge: .trailing))
+                } else {
+                    coinsList
+                    .transition(.move(edge: .leading))
+                }
                 Spacer(minLength: 0)
             }
         }
@@ -30,6 +40,7 @@ struct HomeView: View {
         HomeView()
             .toolbar(.hidden  )
     }
+    .environmentObject(DeveloperPreview.instance.homeVm) 
 }
 
 extension HomeView {
@@ -55,5 +66,38 @@ extension HomeView {
                     }
                 }
         }
+    }
+    
+    private var coloumnTitles: some View {
+        HStack {
+            Text("Coin")
+            Spacer()
+            if (showPortfolio) {Text("Holdings")}
+            Text("Price")
+                .frame(width: UIScreen.main.bounds.width / 3.5, alignment: .trailing)
+        }
+        .font(.caption)
+        .foregroundStyle(Color.theme.secondaryText)
+        .padding(.horizontal)
+    }
+    
+    private var coinsList: some View {
+        List {
+            ForEach(vm.coins) { coin in
+                CoinListItem(coin: coin, showHoldingsColumn: false)
+                    .listRowInsets(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
+            }
+        }
+        .listStyle(PlainListStyle())
+    }
+    
+    private var portfolioList: some View {
+        List {
+            ForEach(vm.portfolioCoins) { coin in
+                CoinListItem(coin: coin, showHoldingsColumn: true)
+                    .listRowInsets(.init(top: 8, leading: 0, bottom: 8, trailing: 8))
+            }
+        }
+        .listStyle(PlainListStyle())
     }
 }
